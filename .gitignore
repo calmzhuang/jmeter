@@ -15,12 +15,10 @@
 *.log
 .ant-targets-build.xml
 .checkstyle
-.classpath
 .externalToolBuilders
 .fbwarnings
 .fbprefs
 .pmd
-.project
 .settings
 /bin/ApacheJMeter.jar
 
