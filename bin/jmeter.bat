@@ -143,7 +143,6 @@ set JMETER_CMD_LINE_ARGS=%*
 
 rem The following link describes the -XX options:
 rem http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html
-
 if not defined HEAP (
     rem See the unix startup file for the rationale of the following parameters,
     rem including some tuning recommendations
@@ -195,7 +194,7 @@ if not defined JMETER_COMPLETE_ARGS (
 if "%JM_START%" == "start" (
     set JM_START=start "Apache_JMeter"
 )
-
+echo %JM_START% "%JM_LAUNCH%" %ARGS% %JVM_ARGS% -jar "%JMETER_BIN%ApacheJMeter.jar" %JMETER_CMD_LINE_ARGS%
 %JM_START% "%JM_LAUNCH%" %ARGS% %JVM_ARGS% -jar "%JMETER_BIN%ApacheJMeter.jar" %JMETER_CMD_LINE_ARGS%
 
 rem If the errorlevel is not zero, then display it and pause

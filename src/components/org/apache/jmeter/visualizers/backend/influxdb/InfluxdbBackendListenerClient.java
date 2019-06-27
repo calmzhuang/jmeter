@@ -183,13 +183,13 @@ public class InfluxdbBackendListenerClient extends AbstractBackendListenerClient
     private void addMetrics(String transaction, SamplerMetric metric) {
         // FOR ALL STATUS
         addMetric(transaction, metric.getTotal(), metric.getSentBytes(), metric.getReceivedBytes(), TAG_ALL, metric.getAllMean(), metric.getAllMinTime(),
-                metric.getAllMaxTime(), allPercentiles.values(), metric::getAllPercentile);
+                metric.getAllMaxTime(), allPercentiles.values(), metric::getAllPercentile, metric.getFailures());
         // FOR OK STATUS
         addMetric(transaction, metric.getSuccesses(), null, null, TAG_OK, metric.getOkMean(), metric.getOkMinTime(),
-                metric.getOkMaxTime(), okPercentiles.values(), metric::getOkPercentile);
+                metric.getOkMaxTime(), okPercentiles.values(), metric::getOkPercentile, null);
         // FOR KO STATUS
         addMetric(transaction, metric.getFailures(), null, null, TAG_KO, metric.getKoMean(), metric.getKoMinTime(),
-                metric.getKoMaxTime(), koPercentiles.values(), metric::getKoPercentile);
+                metric.getKoMaxTime(), koPercentiles.values(), metric::getKoPercentile, null);
 
         metric.getErrors().forEach((error, count) -> addErrorMetric(transaction, error.getResponseCode(),
                     error.getResponseMessage(), count));
@@ -213,7 +213,7 @@ public class InfluxdbBackendListenerClient extends AbstractBackendListenerClient
     private void addMetric(String transaction, int count, 
             Long sentBytes, Long receivedBytes,
             String statut, double mean, double minTime, double maxTime, 
-            Collection<Float> pcts, PercentileProvider percentileProvider) {
+            Collection<Float> pcts, PercentileProvider percentileProvider, Integer failures) {
         if (count > 0) {
             StringBuilder tag = new StringBuilder(95);
             tag.append(TAG_APPLICATION).append(application);
@@ -223,6 +223,9 @@ public class InfluxdbBackendListenerClient extends AbstractBackendListenerClient
 
             StringBuilder field = new StringBuilder(80);
             field.append(METRIC_COUNT).append(count);
+            if(failures != null && CUMULATED_METRICS.equals(statut)){
+                field.append(',').append(METRIC_COUNT_ERROR).append(failures);
+            }
             if (!Double.isNaN(mean)) {
                 field.append(',').append(METRIC_AVG).append(mean);
             }

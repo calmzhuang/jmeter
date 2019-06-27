@@ -1,0 +1,1 @@
+set HEAP=-Xms2g -Xmx2g -XX:MaxMetaspaceSize=512m
